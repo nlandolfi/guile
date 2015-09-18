@@ -1,16 +1,33 @@
 package guile
 
+// A BinaryRelation is the interface for
+// a Binary relation from set theory.
+// We make a major simplfication here though,
+// we only allow for a binary relation over
+// a the cartesian product of one set.
+// i.e., S × S, therefore the Binary Relation
+// B on S is a subset of the product set of S with
+// itself. An improvement would be to remove this
+// seemingly arbitrary restriction
 type BinaryRelation interface {
 	Universe() Set
 	ContainsRelation(Element, Element) bool
 }
 
+// A physical BinaryRelation is constructed
+// piecewise using the AddRelation function
+// It's representation is finite, and stored
+// completely. Contrast with a Binary Relation
+// defined by a function, f: X → ℝ
 type PhysicalBinaryRelation interface {
 	BinaryRelation
 	AddRelation(Element, Element)
 	RemoveRelation(Element, Element)
 }
 
+// NewPhysicalBinaryRelationOn constructs a new
+// BinaryRelation using guile's interal binaryRelation
+// implementation
 func NewPhysicalBinaryRelationOn(universe Set) PhysicalBinaryRelation {
 	return &binaryRelation{
 		universe:  universe,
@@ -114,6 +131,7 @@ func Transitive(b BinaryRelation) bool {
 
 	elems := b.Universe().Elements()
 
+	// n^3 :(
 	for _, x := range elems {
 		for _, y := range elems {
 			for _, z := range elems {
