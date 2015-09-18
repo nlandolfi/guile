@@ -2,21 +2,16 @@ package guile
 
 type BinaryRelation interface {
 	Universe() Set
-
-	AddRelation(Element, Element)
-	RemoveRelation(Element, Element)
 	ContainsRelation(Element, Element) bool
-
-	Reflexive() bool
-	Complete() bool
-	Transitive() bool
-	Symmetric() bool
-	AntiSymmetric() bool
-	WeakOrder() bool
-	StrictOrder() bool
 }
 
-func NewBinaryRelationOn(universe Set) BinaryRelation {
+type PhysicalBinaryRelation interface {
+	BinaryRelation
+	AddRelation(Element, Element)
+	RemoveRelation(Element, Element)
+}
+
+func NewPhysicalBinaryRelationOn(universe Set) PhysicalBinaryRelation {
 	return &binaryRelation{
 		universe:  universe,
 		relations: make(map[Element]map[Element]bool),
@@ -33,8 +28,6 @@ type binaryRelation struct {
 func (b *binaryRelation) Universe() Set {
 	return b.universe
 }
-
-// --- Relation Management {{{
 
 func (b *binaryRelation) AddRelation(e1, e2 Element) {
 	assert(b.universe.Contains(e1), "(*binaryRelation).AddRelation: element 1 is not contained in universe")
@@ -82,8 +75,9 @@ func (b *binaryRelation) ContainsRelation(e1, e2 Element) bool {
 // --- }}}
 
 // --- Properties {{{
-func (b *binaryRelation) Reflexive() bool {
-	for _, e := range b.universe.Elements() {
+
+func Reflexive(b BinaryRelation) bool {
+	for _, e := range b.Universe().Elements() {
 		if !b.ContainsRelation(e, e) {
 			return false
 		}
@@ -92,8 +86,8 @@ func (b *binaryRelation) Reflexive() bool {
 	return true
 }
 
-func (b *binaryRelation) Complete() bool {
-	elems := b.universe.Elements()
+func Complete(b BinaryRelation) bool {
+	elems := b.Universe().Elements()
 
 	// n^2! yuck!
 	for _, e := range elems {
@@ -107,12 +101,12 @@ func (b *binaryRelation) Complete() bool {
 	return true
 }
 
-func (b *binaryRelation) Transitive() bool {
+func Transitive(b BinaryRelation) bool {
 	if !b.Complete() {
 		return false
 	}
 
-	elems := b.universe.Elements()
+	elems := b.Universe().Elements()
 
 	for _, x := range elems {
 		for _, y := range elems {
@@ -129,8 +123,9 @@ func (b *binaryRelation) Transitive() bool {
 	return true
 }
 
-func (b *binaryRelation) Symmetric() bool {
-	elems := b.universe.Elements()
+func Symmetric(b BinaryRelation) bool {
+	elems := b.Universe().Elements()
+
 	for _, x := range elems {
 		for _, y := range elems {
 			if b.ContainsRelation(x, y) {
@@ -144,8 +139,8 @@ func (b *binaryRelation) Symmetric() bool {
 	return true
 }
 
-func (b *binaryRelation) AntiSymmetric() bool {
-	elems := b.universe.Elements()
+func AntiSymmetric(b BinaryRelation) bool {
+	elems := b.Universe().Elements()
 	for _, x := range elems {
 		for _, y := range elems {
 			if b.ContainsRelation(x, y) && b.ContainsRelation(y, x) {
@@ -161,12 +156,12 @@ func (b *binaryRelation) AntiSymmetric() bool {
 
 // --- }}}
 
-func (b *binaryRelation) WeakOrder() bool {
-	return b.Complete() && b.Transitive()
+func WeakOrder(b BinaryRelation) bool {
+	return Complete(b) && Transitive(b)
 }
 
-func (b *binaryRelation) StrictOrder() bool {
-	return b.WeakOrder() && b.AntiSymmetric()
+func StrictOrder(b BinaryRelation) bool {
+	return WeakOrder(b) && AntiSymmetric(b)
 }
 
 // --- }}}
