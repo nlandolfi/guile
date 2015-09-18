@@ -37,21 +37,29 @@ func NewPhysicalBinaryRelationOn(universe Set) PhysicalBinaryRelation {
 
 // --- Binary Relation Implementation {{{
 
+// binaryRelation is guile's internal representation of
+// a binaryRelation
 type binaryRelation struct {
 	universe  Set
 	relations map[Element]map[Element]bool
 }
 
+// Universe() returns the set over which the binary
+// relation is defined
 func (b *binaryRelation) Universe() Set {
 	return b.universe
 }
 
+// assert is a helper function to provide
+// moderate runtime type checking on the Element interface
 func assert(flag bool, s string) {
 	if !flag {
 		panic(s)
 	}
 }
 
+// AddRelation will note the fact that e1 is related to e2
+// Denote our binary relation as B, then e1 B e2 <=> AddRelation(e1, e2)
 func (b *binaryRelation) AddRelation(e1, e2 Element) {
 	assert(b.universe.Contains(e1), "(*binaryRelation).AddRelation: element 1 is not contained in universe")
 	assert(b.universe.Contains(e2), "(*binaryRelation).AddRelation: element 2 is not contained in universe")
@@ -71,6 +79,8 @@ func (b *binaryRelation) AddRelation(e1, e2 Element) {
 	b.relations[e1] = bucket
 }
 
+// RemoveRelation is the inverse operation of AddRelation
+// It works regardless of whether the relation is actually present
 func (b *binaryRelation) RemoveRelation(e1, e2 Element) {
 	assert(b.universe.Contains(e1), "(*binaryRelation).AddRelation: element 1 is not contained in universe")
 	assert(b.universe.Contains(e2), "(*binaryRelation).AddRelation: element 2 is not contained in universe")
@@ -82,6 +92,9 @@ func (b *binaryRelation) RemoveRelation(e1, e2 Element) {
 	}
 }
 
+// ContainsRelation determines whether the given relation exists and is
+// defined as a member of this binary relation. Note: Order of e1, and e2
+// matters, of course.
 func (b *binaryRelation) ContainsRelation(e1, e2 Element) bool {
 	assert(b.universe.Contains(e1), "(*binaryRelation).AddRelation: element 1 is not contained in universe")
 	assert(b.universe.Contains(e2), "(*binaryRelation).AddRelation: element 2 is not contained in universe")
@@ -99,6 +112,8 @@ func (b *binaryRelation) ContainsRelation(e1, e2 Element) bool {
 
 // --- Properties {{{
 
+// Reflexive checks the following condition:
+//  xBx for any x ∈ X ≡ Universe()
 func Reflexive(b BinaryRelation) bool {
 	for _, e := range b.Universe().Elements() {
 		if !b.ContainsRelation(e, e) {
@@ -109,6 +124,8 @@ func Reflexive(b BinaryRelation) bool {
 	return true
 }
 
+// Complete checks the following condition:
+//  xBy or yBx for any x, y ∈ X ≡ Universe()
 func Complete(b BinaryRelation) bool {
 	elems := b.Universe().Elements()
 
@@ -124,6 +141,8 @@ func Complete(b BinaryRelation) bool {
 	return true
 }
 
+// Transitive checks the following condition:
+//	 (xBy and yBz) ⇒  xBz for any x, y, z ∈ X ≡ Universe()
 func Transitive(b BinaryRelation) bool {
 	if !Complete(b) {
 		return false
@@ -147,6 +166,8 @@ func Transitive(b BinaryRelation) bool {
 	return true
 }
 
+// Symmetric checks the following condition:
+//	 xBy ⇒  yBx for any x, y ∈ X ≡ Universe
 func Symmetric(b BinaryRelation) bool {
 	elems := b.Universe().Elements()
 
@@ -163,6 +184,8 @@ func Symmetric(b BinaryRelation) bool {
 	return true
 }
 
+// AntiSymmetric checks the following condition:
+//	(xBy and yBx) ⇒  (x = y), for any x, y ∈ X
 func AntiSymmetric(b BinaryRelation) bool {
 	elems := b.Universe().Elements()
 	for _, x := range elems {
@@ -180,10 +203,14 @@ func AntiSymmetric(b BinaryRelation) bool {
 
 // --- }}}
 
+// WeakOrder checks the B is Complete and Transitive
+// i.e, > and >= defined on the universe of naturals
 func WeakOrder(b BinaryRelation) bool {
 	return Complete(b) && Transitive(b)
 }
 
+// StrictOrder checks that B is a weak order and additionally
+// that B is Symmetric. (This is > verse >=)
 func StrictOrder(b BinaryRelation) bool {
 	return WeakOrder(b) && AntiSymmetric(b)
 }
