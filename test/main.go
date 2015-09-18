@@ -19,6 +19,7 @@ func main() {
 
 	ub := guile.NewUtilityBinaryRelationOn(s, u)
 
+	log.Print(guile.Reflexive(ub))
 	log.Print(guile.Complete(ub))
 	log.Print(guile.Transitive(ub))
 
