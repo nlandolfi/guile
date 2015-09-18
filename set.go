@@ -15,10 +15,10 @@ type VirtualSet interface {
 
 // A Set represents the classical collection of elements
 // as established in set theory. It of course inherits the
-// from the VirtualSet interface; specifically, the Contains 
-// function. But because it is physical and can be manipulated 
-// you can also add, remove and ask for all the elements of the 
-// set. Additionally it is countably finite, so you can ask for 
+// from the VirtualSet interface; specifically, the Contains
+// function. But because it is physical and can be manipulated
+// you can also add, remove and ask for all the elements of the
+// set. Additionally it is countably finite, so you can ask for
 // the Cardinality.
 type Set interface {
 	VirtualSet
@@ -39,6 +39,19 @@ func NewSet() Set {
 	}
 }
 
+// NewSetWithElements constructs a new Set object,
+// contains the elements in the slice, 'elements'
+func NewSetWithElements(elements []Element) Set {
+	// maybe optimize?
+	s := NewSet()
+
+	for i := range elements {
+		s.Add(elements[i])
+	}
+
+	return s
+}
+
 // --- Set Implementation {{{
 
 // set is guile's internal implementation of a set
@@ -49,7 +62,7 @@ type set struct {
 
 // Add will include Element, e, as a member of the set.
 // If e is already a member of the set Add still works.
-// Add returns a boolean. If the Element, e, was already 
+// Add returns a boolean. If the Element, e, was already
 // a member of the Set Add returns true, else it is false
 func (s *set) Add(e Element) bool {
 	contains := s.Contains(e)
