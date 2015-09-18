@@ -42,3 +42,42 @@ func TestBinaryRelation(t *testing.T) {
 		t.Errorf("Expected binary relation to no longer contain (1, 0), as we removed it")
 	}
 }
+
+func u(a Alternative) float64 {
+	switch a {
+	case "one":
+		return 1
+	case "two":
+		return 2
+	case "three":
+		return 3
+	default:
+		return 0
+	}
+}
+
+func TestUtilityBinaryRelation(t *testing.T) {
+	s := NewSet()
+
+	s.Add("one")
+	s.Add("two")
+	s.Add("three")
+
+	ub := NewUtilityBinaryRelationOn(s, u)
+
+	if !Reflexive(ub) {
+		t.Errorf("Our UtilityBinaryRelation should be reflexive")
+	}
+
+	if !Complete(ub) {
+		t.Errorf("Our UtilityBinaryRelation should be complete")
+	}
+
+	if !Transitive(ub) {
+		t.Errorf("Our UtilityBinaryRelation should be transitive")
+	}
+
+	if !Rational(Preference(ub)) {
+		t.Errorf("Our UtilityBinaryRelation should be rational! -- von Neumann-Morgenstern")
+	}
+}
