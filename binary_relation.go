@@ -29,6 +29,12 @@ func (b *binaryRelation) Universe() Set {
 	return b.universe
 }
 
+func assert(flag bool, s string) {
+	if !flag {
+		panic(s)
+	}
+}
+
 func (b *binaryRelation) AddRelation(e1, e2 Element) {
 	assert(b.universe.Contains(e1), "(*binaryRelation).AddRelation: element 1 is not contained in universe")
 	assert(b.universe.Contains(e2), "(*binaryRelation).AddRelation: element 2 is not contained in universe")
