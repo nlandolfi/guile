@@ -13,9 +13,27 @@ func main() {
 	s.Add("two")
 	s.Add("three")
 
-	b := guile.NewBinaryRelationOn(s)
+	b := guile.NewPhysicalBinaryRelationOn(s)
 
-	b.AddRelation("one", "two", guile.Left)
-	log.Print(b.ContainsRelation("one", "two"))
-	log.Print(b.ContainsRelation("two", "one"))
+	b.AddRelation("one", "two")
+
+	ub := guile.NewUtilityBinaryRelationOn(s, u)
+
+	log.Print(guile.Complete(ub))
+	log.Print(guile.Transitive(ub))
+
+	log.Print(guile.Rational(guile.Preference(ub)))
+}
+
+func u(a guile.Alternative) float64 {
+	switch a {
+	case "one":
+		return 1
+	case "two":
+		return 2
+	case "three":
+		return 3
+	default:
+		return 0
+	}
 }

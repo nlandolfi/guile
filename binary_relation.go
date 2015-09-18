@@ -90,9 +90,9 @@ func Complete(b BinaryRelation) bool {
 	elems := b.Universe().Elements()
 
 	// n^2! yuck!
-	for _, e := range elems {
-		for _, eprime := range elems {
-			if !b.ContainsRelation(e, eprime) {
+	for _, x := range elems {
+		for _, y := range elems {
+			if !(b.ContainsRelation(x, y) || b.ContainsRelation(y, x)) {
 				return false
 			}
 		}
@@ -102,7 +102,7 @@ func Complete(b BinaryRelation) bool {
 }
 
 func Transitive(b BinaryRelation) bool {
-	if !b.Complete() {
+	if !Complete(b) {
 		return false
 	}
 

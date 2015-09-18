@@ -7,10 +7,7 @@ type (
 
 	Alternatives Set
 
-	Preference interface {
-		BinaryRelation
-		Rational() bool
-	}
+	Preference BinaryRelation
 
 	UtilityFunction func(Alternative) float64
 )
@@ -19,10 +16,8 @@ type (
 
 // -- Preference Implementation {{{
 
-type preference binaryRelation
-
-func (p *preference) Rational() bool {
-	return WeakOrder((*binaryRelation)(p))
+func Rational(p Preference) bool {
+	return WeakOrder(p)
 }
 
 // --- }}}
