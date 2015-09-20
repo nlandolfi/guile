@@ -201,7 +201,25 @@ func AntiSymmetric(b BinaryRelation) bool {
 	return true
 }
 
+func ComposableRelations(relations []BinaryRelation) bool {
+	if len(relations) == 0 {
+		return true
+	}
+
+	u := relations[0].Universe()
+
+	for _, b := range relations {
+		if !Equivalent(u, b.Universe()) {
+			return false
+		}
+	}
+
+	return true
+}
+
 // --- }}}
+
+// --- Orders {{{
 
 // WeakOrder checks the B is Complete and Transitive
 // i.e, > and >= defined on the universe of naturals
@@ -213,6 +231,38 @@ func WeakOrder(b BinaryRelation) bool {
 // that B is Symmetric. (This is > verse >=)
 func StrictOrder(b BinaryRelation) bool {
 	return WeakOrder(b) && AntiSymmetric(b)
+}
+
+func Reverse(b BinaryRelation) BinaryRelation {
+	return NewFunctionBinaryRelation(b.Universe(), func(x, y Element) bool {
+		return !b.ContainsRelation(x, y)
+	})
+}
+
+// --- }}}
+
+// --- Function Based Binary Relation {{{
+
+type RelatedFunction func(Element, Element) bool
+
+type fnBinaryRelation struct {
+	universe Set
+	related  RelatedFunction
+}
+
+func NewFunctionBinaryRelation(u Set, fn RelatedFunction) BinaryRelation {
+	return &fnBinaryRelation{
+		universe: u,
+		related:  fn,
+	}
+}
+
+func (fb *fnBinaryRelation) Universe() Set {
+	return fb.universe
+}
+
+func (fb *fnBinaryRelation) ContainsRelation(x, y Element) bool {
+	return fb.related(x, y)
 }
 
 // --- }}}
