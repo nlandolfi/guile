@@ -43,7 +43,7 @@ func TestBinaryRelation(t *testing.T) {
 	}
 }
 
-func u(a Alternative) float64 {
+func u(a Alternative) Utility {
 	switch a {
 	case "one":
 		return 1

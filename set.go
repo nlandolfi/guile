@@ -52,6 +52,22 @@ func NewSetWithElements(elements []Element) Set {
 	return s
 }
 
+func Equivalent(s1, s2 Set) bool {
+	for e := range s1.Elements() {
+		if !s2.Contains(e) {
+			return false
+		}
+	}
+
+	for e := range s2.Elements() {
+		if !s1.Contains(e) {
+			return false
+		}
+	}
+
+	return true
+}
+
 // --- Set Implementation {{{
 
 // set is guile's internal implementation of a set
