@@ -2,13 +2,6 @@ package guile
 
 // A BinaryRelation is the interface for
 // a Binary relation from set theory.
-// We make a major simplfication here though,
-// we only allow for a binary relation over
-// a the cartesian product of one set.
-// i.e., S × S, therefore the Binary Relation
-// B on S is a subset of the product set of S with
-// itself. An improvement would be to remove this
-// seemingly arbitrary restriction
 type BinaryRelation interface {
 	Universe() Set
 	ContainsRelation(Element, Element) bool

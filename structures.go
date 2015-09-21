@@ -14,7 +14,7 @@ type (
 	SocialWelfareFunction func(PreferenceProfile) Preference
 )
 
-// --- }}
+// --- }}}
 
 // -- Preference Implementation {{{
 
@@ -39,10 +39,12 @@ func ProfileUniverse(p PreferenceProfile) Alternatives {
 	return p[0].Universe()
 }
 
+// CountPreferenceOf returns the number of people who prefer x to y in the preference profile pp
 func CountPreferenceOf(x, y Alternative, pp PreferenceProfile) float64 {
 	return CountWeightedPreferenceOf(x, y, pp, func(i uint) float64 { return 1 })
 }
 
+// CountWeightedPreferenceOf returns the weigth of people who prefer x, y in preference profile pp
 func CountWeightedPreferenceOf(x, y Alternative, pp PreferenceProfile, w func(uint) float64) float64 {
 	c := 0.0
 
