@@ -60,7 +60,7 @@ func CountWeightedPreferenceOf(x, y Alternative, pp PreferenceProfile, w func(ui
 func BordaCount(x Alternative, p Preference) uint {
 	c := uint(0)
 
-	for e := range p.Universe().Elements() {
+	for _, e := range p.Universe().Elements() {
 		if p.ContainsRelation(x, e) {
 			c += 1
 		}
@@ -118,6 +118,36 @@ func WeightedMajority(pp PreferenceProfile, w func(uint) float64) Preference {
 	return NewFunctionBinaryRelation(u, func(x, y Element) bool {
 		return CountWeightedPreferenceOf(x, y, pp, w) >= CountWeightedPreferenceOf(y, x, pp, w)
 	})
+}
+
+// --- }}}
+
+// --- Choice Functions {{{
+
+func MostPreferred(p Preference) Alternative {
+	seen := make(map[Alternative]bool)
+	elements := p.Universe().Elements()
+
+	assert(len(elements) > 0, "set of alternatives must have cardinality > 0")
+
+	preferred := elements[0]
+	seen[preferred] = true
+
+	for _, e := range elements {
+		if _, ok := seen[e]; ok {
+			continue
+		}
+
+		if p.ContainsRelation(preferred, e) {
+			continue
+		}
+
+		if p.ContainsRelation(e, preferred) {
+			preferred = e
+		}
+	}
+
+	return preferred
 }
 
 // --- }}}

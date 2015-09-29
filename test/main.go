@@ -7,34 +7,25 @@ import (
 )
 
 func main() {
-	s := guile.NewSet()
+	s := guile.NewSetWithElements([]guile.Element{"pushups", "reading", "sleep"})
 
-	s.Add("one")
-	s.Add("two")
-	s.Add("three")
+	health := guile.NewPhysicalBinaryRelationOn(s)
+	health.AddRelation("sleep", "pushups")
+	health.AddRelation("pushups", "reading")
 
-	b := guile.NewPhysicalBinaryRelationOn(s)
+	philosophy := guile.NewPhysicalBinaryRelationOn(s)
+	philosophy.AddRelation("reading", "pushups")
+	philosophy.AddRelation("pushups", "sleep")
 
-	b.AddRelation("one", "two")
+	humanity := guile.NewPhysicalBinaryRelationOn(s)
+	humanity.AddRelation("reading", "sleep")
+	humanity.AddRelation("sleep", "pushups")
 
-	ub := guile.NewUtilityBinaryRelationOn(s, u)
+	elos := guile.PreferenceProfile{health, philosophy, humanity}
 
-	log.Print(guile.Reflexive(ub))
-	log.Print(guile.Complete(ub))
-	log.Print(guile.Transitive(ub))
+	r := guile.PairwiseMajority(elos)
+	log.Print(guile.MostPreferred(r))
 
-	log.Print(guile.Rational(guile.Preference(ub)))
-}
-
-func u(a guile.Alternative) float64 {
-	switch a {
-	case "one":
-		return 1
-	case "two":
-		return 2
-	case "three":
-		return 3
-	default:
-		return 0
-	}
+	b := guile.BordaCounting(elos)
+	log.Print(guile.MostPreferred(b))
 }
