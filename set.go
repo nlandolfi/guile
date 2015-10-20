@@ -53,12 +53,14 @@ func NewSetWithElements(elements []Element) Set {
 }
 
 func Equivalent(s1, s2 Set) bool {
+	// is every element in s1 a member of s2
 	for _, e := range s1.Elements() {
 		if !s2.Contains(e) {
 			return false
 		}
 	}
 
+	// is every element in s2 a member of s1
 	for _, e := range s2.Elements() {
 		if !s1.Contains(e) {
 			return false
