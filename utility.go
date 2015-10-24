@@ -1,5 +1,7 @@
 package guile
 
+import "github.com/nlandolfi/set"
+
 type (
 	Utility float64
 
@@ -8,7 +10,7 @@ type (
 
 // --- Utility Binary Relation Implemenation {{{
 
-func NewUtilityBinaryRelationOn(universe Set, fn UtilityFunction) BinaryRelation {
+func NewUtilityBinaryRelationOn(universe set.Interface, fn UtilityFunction) set.BinaryRelation {
 	return &utilityRelation{
 		Alternatives: universe,
 		utility:      fn,
@@ -20,11 +22,11 @@ type utilityRelation struct {
 	utility UtilityFunction
 }
 
-func (ur *utilityRelation) Universe() Set {
+func (ur *utilityRelation) Universe() set.Interface {
 	return ur.Alternatives
 }
 
-func (r *utilityRelation) ContainsRelation(e1 Element, e2 Element) bool {
+func (r *utilityRelation) ContainsRelation(e1, e2 set.Element) bool {
 	return r.utility(e1) >= r.utility(e2)
 }
 

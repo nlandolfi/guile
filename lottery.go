@@ -1,6 +1,10 @@
 package guile
 
-import "math/rand"
+import (
+	"math/rand"
+
+	"github.com/nlandolfi/set"
+)
 
 // --- Probability (Modeling Uncertainty) {{{
 type Probability float64
@@ -58,6 +62,14 @@ func NewDegenerateLottery(alternatives Alternatives, a Alternative) Lottery {
 /// --- }}}
 
 // --- Lottery Implementation {{{
+
+// assert is a helper function to provide
+// moderate runtime type checking on the Element interface
+func assert(flag bool, s string) {
+	if !flag {
+		panic(s)
+	}
+}
 
 type lottery struct {
 	alternatives Alternatives
@@ -129,7 +141,7 @@ func Degenerate(l Lottery) bool {
 func Compose(p, q Lottery, alpha Probability) Lottery {
 	assert(FullySupported(p), "first lottery not fully supported")
 	assert(FullySupported(q), "second lottery not fully supported")
-	assert(Equivalent(p.Alternatives(), q.Alternatives()), "lottery alternatives must be equivalent")
+	assert(set.Equivalent(p.Alternatives(), q.Alternatives()), "lottery alternatives must be equivalent")
 
 	n := NewLottery(p.Alternatives())
 

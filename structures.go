@@ -1,13 +1,15 @@
 package guile
 
+import "github.com/nlandolfi/set"
+
 // --- Economic Interpretation {{{
 
 type (
-	Alternative Element
+	Alternative set.Element
 
-	Alternatives Set
+	Alternatives set.Interface
 
-	Preference BinaryRelation
+	Preference set.BinaryRelation
 
 	PreferenceProfile []Preference
 
@@ -19,17 +21,17 @@ type (
 // -- Preference Implementation {{{
 
 func Rational(p Preference) bool {
-	return WeakOrder(p)
+	return set.WeakOrder(p)
 }
 
 func ComposablePreferences(prefs []Preference) bool {
-	br := make([]BinaryRelation, len(prefs))
+	br := make([]set.BinaryRelation, len(prefs))
 
 	for i := range prefs {
-		br[i] = BinaryRelation(prefs[i])
+		br[i] = set.BinaryRelation(prefs[i])
 	}
 
-	return ComposableRelations(br)
+	return set.ComposableRelations(br)
 }
 
 func ProfileUniverse(p PreferenceProfile) Alternatives {
@@ -86,7 +88,7 @@ func ProfileBordaCount(x Alternative, pp PreferenceProfile) uint {
 func PairwiseMajority(pp PreferenceProfile) Preference {
 	u := ProfileUniverse(pp)
 
-	return NewFunctionBinaryRelation(u, func(x, y Element) bool {
+	return set.NewFunctionBinaryRelation(u, func(x, y set.Element) bool {
 		return CountPreferenceOf(x, y, pp) >= CountPreferenceOf(y, x, pp)
 	})
 }
@@ -94,7 +96,7 @@ func PairwiseMajority(pp PreferenceProfile) Preference {
 func BordaCounting(pp PreferenceProfile) Preference {
 	u := ProfileUniverse(pp)
 
-	return NewFunctionBinaryRelation(u, func(x, y Element) bool {
+	return set.NewFunctionBinaryRelation(u, func(x, y set.Element) bool {
 		return ProfileBordaCount(x, pp) >= ProfileBordaCount(y, pp)
 	})
 }
@@ -104,7 +106,7 @@ func Dictatorship(pp PreferenceProfile, individual uint) Preference {
 }
 
 func AntiDictatorship(pp PreferenceProfile, individual uint) Preference {
-	return Reverse(pp[individual])
+	return set.Reverse(pp[individual])
 }
 
 func Constant(pp PreferenceProfile, actual Preference) Preference {
@@ -115,7 +117,7 @@ func Constant(pp PreferenceProfile, actual Preference) Preference {
 func WeightedMajority(pp PreferenceProfile, w func(uint) float64) Preference {
 	u := ProfileUniverse(pp)
 
-	return NewFunctionBinaryRelation(u, func(x, y Element) bool {
+	return set.NewFunctionBinaryRelation(u, func(x, y set.Element) bool {
 		return CountWeightedPreferenceOf(x, y, pp, w) >= CountWeightedPreferenceOf(y, x, pp, w)
 	})
 }
