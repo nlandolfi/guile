@@ -36,7 +36,7 @@ func (r *utilityRelation) ContainsRelation(e1, e2 set.Element) bool {
 
 func ExpectedUtility(l Lottery, utility UtilityFunction) Utility {
 	u := Utility(0)
-	for o := range l.Outcomes() {
+	for o := range l.Outcomes().Iter() {
 		u += utility(o) * Utility(l.ProbabilityOf(o))
 	}
 	return u
