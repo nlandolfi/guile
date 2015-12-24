@@ -4,20 +4,22 @@ import (
 	"log"
 
 	"github.com/nlandolfi/guile"
+	"github.com/nlandolfi/set"
+	"github.com/nlandolfi/set/relation"
 )
 
 func main() {
-	s := guile.NewSetWithElements([]guile.Element{"pushups", "reading", "sleep"})
+	s := set.With([]set.Element{"pushups", "reading", "sleep"})
 
-	health := guile.NewPhysicalBinaryRelationOn(s)
+	health := relation.New(s)
 	health.AddRelation("sleep", "pushups")
 	health.AddRelation("pushups", "reading")
 
-	philosophy := guile.NewPhysicalBinaryRelationOn(s)
+	philosophy := relation.New(s)
 	philosophy.AddRelation("reading", "pushups")
 	philosophy.AddRelation("pushups", "sleep")
 
-	humanity := guile.NewPhysicalBinaryRelationOn(s)
+	humanity := relation.New(s)
 	humanity.AddRelation("reading", "sleep")
 	humanity.AddRelation("sleep", "pushups")
 

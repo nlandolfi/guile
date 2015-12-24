@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/nlandolfi/set"
+	"github.com/nlandolfi/set/relation"
 )
 
 func u(a Alternative) Utility {
@@ -28,15 +29,15 @@ func TestUtilityBinaryRelation(t *testing.T) {
 
 	ub := NewUtilityBinaryRelationOn(s, u)
 
-	if !set.Reflexive(ub) {
+	if !relation.Reflexive(ub) {
 		t.Errorf("Our UtilityBinaryRelation should be reflexive")
 	}
 
-	if !set.Complete(ub) {
+	if !relation.Complete(ub) {
 		t.Errorf("Our UtilityBinaryRelation should be complete")
 	}
 
-	if !set.Transitive(ub) {
+	if !relation.Transitive(ub) {
 		t.Errorf("Our UtilityBinaryRelation should be transitive")
 	}
 

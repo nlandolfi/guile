@@ -1,6 +1,9 @@
 package guile
 
-import "github.com/nlandolfi/set"
+import (
+	"github.com/nlandolfi/set"
+	"github.com/nlandolfi/set/relation"
+)
 
 type (
 	Utility float64
@@ -10,7 +13,7 @@ type (
 
 // --- Utility Binary Relation Implemenation {{{
 
-func NewUtilityBinaryRelationOn(universe set.Interface, fn UtilityFunction) set.BinaryRelation {
+func NewUtilityBinaryRelationOn(universe set.Interface, fn UtilityFunction) relation.AbstractInterface {
 	return &utilityRelation{
 		Alternatives: universe,
 		utility:      fn,
